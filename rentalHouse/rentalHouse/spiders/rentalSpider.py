@@ -8,7 +8,7 @@ class RentalHouseSpider(scrapy.Spider):
 
 	def parse(self,response):
 		url = 'http://hz.zu.anjuke.com/fangyuan/p';
-		for pageNum in range(1,2158):
+		for pageNum in range(1,2198):
 			yield scrapy.Request(url + str(pageNum) + '/',callback=self.parse2)
 
 	def parse2(self,response):

@@ -4,7 +4,7 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
-import MySQLdb
+import pymysql
 import sys
 
 reload(sys)
@@ -13,7 +13,7 @@ sys.setdefaultencoding('utf-8')
 class SQLStorePipeline(object):
 
 	def __init__(self):
-		self.db = MySQLdb.connect(host="localhost",user="root",passwd="",db="estate_appraisal_db")
+		self.db = pymysql.Connect(host="localhost",unix_socket="/Applications/MAMP/tmp/mysql/mysql.sock",port=3306,user="root",passwd="root",db="estate_appraisal_db",charset="utf8")
 		self.cursor = self.db.cursor()
 		self.cursor.execute("SET NAMES utf8")
 		self.db.commit()

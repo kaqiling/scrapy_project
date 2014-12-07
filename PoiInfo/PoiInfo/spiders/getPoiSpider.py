@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-  
 import scrapy
 from PoiInfo.items import PoiinfoItem
-import MySQLdb
+from scrapy.selector import Selector
+import pymysql
 import json
 import sys
 
@@ -16,12 +17,12 @@ class PoiInfoSpider(scrapy.Spider):
 
 	query_key = '银行$医院$学校$酒店$餐饮$公交站$地铁$超市$购物$景点'
 	uid_dis_dict = {}
-	db = MySQLdb.connect(host="localhost",user="root",passwd="",db="estate_appraisal_db",charset="utf8")
+	db = pymysql.Connect(host="localhost",unix_socket="/Applications/MAMP/tmp/mysql/mysql.sock",port=3306,user="root",passwd="root",db="estate_appraisal_db",charset="utf8")
 	cursor = db.cursor()
 	cursor.execute("SET NAMES utf8")
 
 	def parse(self,response):
-		sql = "SELECT url,latitude,longitude FROM second_house_table WHERE uid_dis_dict = ''"
+		sql = "SELECT url,latitude,longitude FROM new_house_table WHERE uid_dis_dict = ''"
 		self.cursor.execute(sql)
 		results = self.cursor.fetchall()
 		for row in results:
@@ -41,7 +42,9 @@ class PoiInfoSpider(scrapy.Spider):
 		latitude = response.meta['latitude']
 		longitude = response.meta['longitude']
 		total = int(response.xpath("//total/text()").extract()[0])
-		results = response.xpath("//result")
+		page_source = response.body_as_unicode()
+		sel = Selector(text = page_source)
+		results = sel.xpath("//result")
 		for i in range(len(results)):
 			uid = results[i].xpath("./uid/text()").extract()[0]
 			dis_list = results[i].xpath("./detail_info/distance/text()").extract()
@@ -51,8 +54,8 @@ class PoiInfoSpider(scrapy.Spider):
 					self.uid_dis_dict[url][uid] = distance
 					item = PoiinfoItem()
 					item['uid'] = uid
-					item['latitude'] = results[i].xpath("./location/lat/text()").extract()[0]
-					item['longitude'] = results[i].xpath("./location/lng/text()").extract()[0]
+					item['latitude'] = float(results[i].xpath("./location/lat/text()").extract()[0])
+					item['longitude'] = float(results[i].xpath("./location/lng/text()").extract()[0])
 					item['address'] = results[i].xpath("./address/text()").extract()[0]
 					item['name'] = results[i].xpath("./name/text()").extract()[0]
 					item['category'] = "unknown"
@@ -76,7 +79,7 @@ class PoiInfoSpider(scrapy.Spider):
 				request.meta['url'] = url
 				yield request
 		else:
-			insert_sql = "update second_house_table set uid_dis_dict = '%s' WHERE url = '%s' " % \
+			insert_sql = "update new_house_table set uid_dis_dict = '%s' WHERE url = '%s' " % \
 			(str(self.uid_dis_dict[url]).replace("u'",'"').replace("'",'"'),url)
 			self.cursor.execute(insert_sql)
 			self.db.commit()
@@ -84,7 +87,9 @@ class PoiInfoSpider(scrapy.Spider):
 	def parse3(self,response):
 		url = response.meta['url']
 		self.uid_dis_dict[url] = response.meta['uid_dis_dict']
-		results = response.xpath("//result")
+		page_source = response.body_as_unicode()
+		sel = Selector(text = page_source)
+		results = sel.xpath("//result")
 		for i in range(len(results)):
 			uid = results[i].xpath("./uid/text()").extract()[0]
 			dis_list = results[i].xpath("./detail_info/distance/text()").extract()
@@ -94,8 +99,8 @@ class PoiInfoSpider(scrapy.Spider):
 					self.uid_dis_dict[url][uid] = distance
 					item = PoiinfoItem()
 					item['uid'] = uid
-					item['latitude'] = results[i].xpath("./location/lat/text()").extract()[0]
-					item['longitude'] = results[i].xpath("./location/lng/text()").extract()[0]
+					item['latitude'] = float(results[i].xpath("./location/lat/text()").extract()[0])
+					item['longitude'] = float(results[i].xpath("./location/lng/text()").extract()[0])
 					item['address'] = results[i].xpath("./address/text()").extract()[0]
 					item['name'] = results[i].xpath("./name/text()").extract()[0]
 					item['category'] = "unknown"
@@ -111,7 +116,7 @@ class PoiInfoSpider(scrapy.Spider):
 					if len(comment_list) > 0:
 						item['comment_num'] = comment_list [0]
 					yield item
-		insert_sql = "update second_house_table set uid_dis_dict = '%s' WHERE url = '%s' " % \
+		insert_sql = "update new_house_table set uid_dis_dict = '%s' WHERE url = '%s' " % \
 		(str(self.uid_dis_dict[url]).replace("u'",'"').replace("'",'"'),url)
 		self.cursor.execute(insert_sql)
 		self.db.commit()

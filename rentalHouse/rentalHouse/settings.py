@@ -12,6 +12,7 @@ BOT_NAME = 'rentalHouse'
 
 SPIDER_MODULES = ['rentalHouse.spiders']
 NEWSPIDER_MODULE = 'rentalHouse.spiders'
-ITEM_PIPELINES = {'rentalHouse.pipelines.SQLStorePipeline':300}
+ITEM_PIPELINES = {'rentalHouse.pipelines.SQLStorePipeline':1}
+AUTOTHROTTLE_ENABLED = True
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'rentalHouse (+http://www.yourdomain.com)'

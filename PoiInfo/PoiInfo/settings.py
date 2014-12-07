@@ -12,6 +12,7 @@ BOT_NAME = 'PoiInfo'
 
 SPIDER_MODULES = ['PoiInfo.spiders']
 NEWSPIDER_MODULE = 'PoiInfo.spiders'
-
+ITEM_PIPELINES = {'PoiInfo.pipelines.SQLStorePipeline':1}
+AUTOTHROTTLE_ENABLED = True
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'PoiInfo (+http://www.yourdomain.com)'

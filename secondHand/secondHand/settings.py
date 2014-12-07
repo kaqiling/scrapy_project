@@ -12,6 +12,7 @@ BOT_NAME = 'secondHand'
 
 SPIDER_MODULES = ['secondHand.spiders']
 NEWSPIDER_MODULE = 'secondHand.spiders'
-ITEM_PIPELINES = {'secondHand.pipelines.SQLStorePipeline':300}
+ITEM_PIPELINES = {'secondHand.pipelines.SQLStorePipeline':1}
+AUTOTHROTTLE_ENABLED = True
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'secondHand (+http://www.yourdomain.com)'

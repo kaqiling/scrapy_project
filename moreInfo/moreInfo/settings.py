@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for newHouse project
+# Scrapy settings for moreInfo project
 #
 # For simplicity, this file contains only the most important settings by
 # default. All the other settings are documented here:
@@ -8,12 +8,11 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-BOT_NAME = 'newHouse'
+BOT_NAME = 'moreInfo'
 
-SPIDER_MODULES = ['newHouse.spiders']
-NEWSPIDER_MODULE = 'newHouse.spiders'
-ITEM_PIPELINES = {'newHouse.pipelines.SQLStorePipeline':1}
+SPIDER_MODULES = ['moreInfo.spiders']
+NEWSPIDER_MODULE = 'moreInfo.spiders'
 AUTOTHROTTLE_ENABLED = True
-
+CONCURRENT_REQUESTS = '600'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'newHouse (+http://www.yourdomain.com)'
+#USER_AGENT = 'moreInfo (+http://www.yourdomain.com)'
